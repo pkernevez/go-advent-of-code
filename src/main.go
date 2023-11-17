@@ -20,6 +20,12 @@ func main() {
 	}
 	log.Printf("Running day %d\n", day)
 
-	log.Print("Totto")
+	switch day {
+	case 1:
+		Day1()
+	default:
+		log.Fatalf("Unsupported day: %d", day)
+	}
+	log.Print("Finished")
 
 }
