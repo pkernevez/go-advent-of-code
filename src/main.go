@@ -9,7 +9,7 @@ import (
 func main() {
 	var day int
 	if len(os.Args) == 1 {
-		day = 1
+		day = 2
 		log.Printf("Use default day: %v\n", day)
 	} else {
 		explicitDay, err := strconv.Atoi(os.Args[1])
@@ -23,6 +23,8 @@ func main() {
 	switch day {
 	case 1:
 		Day1()
+	case 2:
+		Day2()
 	default:
 		log.Fatalf("Unsupported day: %d", day)
 	}

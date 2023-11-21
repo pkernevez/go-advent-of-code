@@ -24,7 +24,7 @@ func (e *Elf) allFood() int {
 	return sum
 }
 
-func data() []*Elf {
+func data1() []*Elf {
 	var data []*Elf = nil
 	lines := ReadLines("day1.txt")
 	var currentElf = &Elf{len(data), []int{}}
@@ -47,7 +47,7 @@ func data() []*Elf {
 func Day1() {
 	log.Print("Running day 1")
 
-	data := data()
+	data := data1()
 	// find the elf with the most food
 	var maxFood int
 	var maxElf int
