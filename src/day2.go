@@ -43,6 +43,7 @@ func Day2() {
 	for _, fight := range data {
 		globalScore += score(fight)
 	}
+	// 11150
 	log.Printf("Global score from command: %d", globalScore)
 
 	data2 := dataReco2()
@@ -50,107 +51,62 @@ func Day2() {
 	for _, fight := range data2 {
 		globalRecoScore += score(fight)
 	}
+	// 8295
 	log.Printf("Global score from reco: %d", globalRecoScore)
 }
-func fromReco(opponent RPS, s string) RPS {
-	switch s {
-	case "X": // Lose
-		switch opponent {
-		case Rock:
-			return Scissors
-		case Paper:
-			return Rock
-		case Scissors:
-			return Paper
-		}
-	case "Y": // Raw
-		switch opponent {
-		case Rock:
-			return Rock
-		case Paper:
-			return Paper
-		case Scissors:
-			return Scissors
-		}
-	case "Z": // Win
-		switch opponent {
-		case Rock:
-			return Paper
-		case Paper:
-			return Scissors
-		case Scissors:
-			return Rock
-		}
-	}
-	panic("Unknown move")
+
+type entry struct {
+	him  RPS
+	reco string
 }
-func fromOpponent(s string) RPS {
-	switch s {
-	case "A":
-		return Rock
-	case "B":
-		return Paper
-	case "C":
-		return Scissors
-	default:
-		panic("Unknown move")
+
+func fromReco(opponent RPS, s string) RPS {
+	rules := map[entry]RPS{
+		entry{Rock, "X"}:     Scissors, // Lose
+		entry{Paper, "X"}:    Rock,
+		entry{Scissors, "X"}: Paper,
+		entry{Rock, "Y"}:     Rock, // Raw
+		entry{Paper, "Y"}:    Paper,
+		entry{Scissors, "Y"}: Scissors,
+		entry{Rock, "Z"}:     Paper, // Raw
+		entry{Paper, "Z"}:    Scissors,
+		entry{Scissors, "Z"}: Rock,
 	}
+	return getOrPanic(rules, entry{opponent, s})
+}
+
+func fromOpponent(s string) RPS {
+	rules := map[string]RPS{
+		"A": Rock,
+		"B": Paper,
+		"C": Scissors}
+	return getOrPanic(rules, s)
 }
 func fromMe(s string) RPS {
-	switch s {
-	case "X":
-		return Rock
-	case "Y":
-		return Paper
-	case "Z":
-		return Scissors
-	default:
-		panic("Unknown move")
+	rules := map[string]RPS{
+		"X": Rock,
+		"Y": Paper,
+		"Z": Scissors,
 	}
+	return getOrPanic(rules, s)
 }
 
-func (m RPS) String() string {
-	switch m {
-	case Rock:
-		return "Rock"
-	case Paper:
-		return "Paper"
-	case Scissors:
-		return "Scissors"
-	default:
-		panic("Unknown move")
-	}
-}
 func score(fight match) int {
-	var score int
-	switch fight.me {
-	case Rock:
-		score = 1
-	case Paper:
-		score = 2
-	case Scissors:
-		score = 3
-	default:
-		panic("Unknown move")
+	rules := map[RPS]int{
+		Rock:     1,
+		Paper:    2,
+		Scissors: 3,
 	}
+	var score int = getOrPanic(rules, fight.me)
 
-	var fightScore int
-	switch fight {
-	case match{Scissors, Rock}:
-		fightScore = 6
-	case match{Rock, Paper}:
-		fightScore = 6
-	case match{Paper, Scissors}:
-		fightScore = 6
-	case match{Rock, Rock}:
-		fightScore = 3
-	case match{Paper, Paper}:
-		fightScore = 3
-	case match{Scissors, Scissors}:
-		fightScore = 3
-	default:
-		fightScore = 0
+	scoreRules := map[match]int{
+		match{Scissors, Rock}:     6,
+		match{Rock, Paper}:        6,
+		match{Paper, Scissors}:    6,
+		match{Rock, Rock}:         3,
+		match{Paper, Paper}:       3,
+		match{Scissors, Scissors}: 3,
 	}
-
+	var fightScore = getOrDefault(scoreRules, fight, 0)
 	return score + fightScore
 }
