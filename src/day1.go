@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"sort"
 	"strconv"
 )
 
@@ -23,15 +24,15 @@ func (e *Elf) allFood() int {
 	return sum
 }
 
-func data() map[int]*Elf {
-	data := map[int]*Elf{}
+func data() []*Elf {
+	var data []*Elf = nil
 	lines := ReadLines("day1.txt")
 	var currentElf = &Elf{len(data), []int{}}
-	data[len(data)] = currentElf
+	data = append(data, currentElf)
 	for _, line := range lines {
 		if line == "" {
 			currentElf = &Elf{len(data), []int{}}
-			data[len(data)] = currentElf
+			data = append(data, currentElf)
 			log.Print("New Elf")
 		} else {
 			food, _ := strconv.Atoi(line)
@@ -57,4 +58,16 @@ func Day1() {
 		}
 	}
 	log.Printf("Elf %d has the most food: %d\n", maxElf, maxFood)
+
+	sort.Slice(data, func(i, j int) bool {
+		return data[i].allFood() > data[j].allFood()
+	})
+
+	sumFoods := 0
+	n := 3
+	for _, elf := range data[:n] {
+		log.Printf("Elf %d has %d food: %v", elf.position, elf.allFood(), elf.food)
+		sumFoods += elf.allFood()
+	}
+	log.Printf("The first %d Elves carry: %d\n", n, sumFoods)
 }
